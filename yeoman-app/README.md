@@ -41,11 +41,19 @@ $ bower install && npm install
 $ gulp build
 $ gulp serve
 $ gulp serve:test
+$ gulp serve:dist
 ```
 
 ### Add controller
 
 ```
 $ yo angular:controller Home
+$ yo angular:controller Help
+```
+
+### Add constant
+
+```
+$ yo angular:constant ContextRoot
 ```
 

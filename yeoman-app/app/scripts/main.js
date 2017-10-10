@@ -14,7 +14,6 @@
     .module('yeomanApp')
     .controller('MainCtrl', mainController);
 
-
   function mainConfig() {}
 
   function mainController() {}
