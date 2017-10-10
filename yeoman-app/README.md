@@ -32,7 +32,7 @@ $ bower install --save-dev angular-mocks@~1.3.20
 ### Prepare application
 
 ```
-bower install && npm install
+$ bower install && npm install
 ```
 
 ### Run app
