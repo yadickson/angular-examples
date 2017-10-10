@@ -2,18 +2,21 @@
   'use strict';
 
   angular
-    .module('yeomanAppApp', ['ui.router']);
+    .module('yeomanApp', [
+      'ui.router'
+    ]);
 
   angular
-    .module('yeomanAppApp').config(yeomanAppAppConfig);
+    .module('yeomanApp')
+    .config(mainConfig);
 
   angular
-    .module('yeomanAppApp')
-    .controller('MainCtrl', yeomanAppAppCtrl);
+    .module('yeomanApp')
+    .controller('MainCtrl', mainController);
 
 
-  function yeomanAppAppConfig() {}
+  function mainConfig() {}
 
-  function yeomanAppAppCtrl() {}
+  function mainController() {}
 
 })();

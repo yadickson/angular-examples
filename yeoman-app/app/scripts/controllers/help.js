@@ -3,16 +3,16 @@
 
   /**
    * @ngdoc function
-   * @name yeomanAppApp.controller:HomeCtrl
+   * @name yeomanAppApp.controller:HelpCtrl
    * @description
-   * # HomeCtrl
+   * # HelpCtrl
    * Controller of the yeomanAppApp
    */
   angular
     .module('yeomanApp')
-    .controller('HomeCtrl', homeController);
+    .controller('HelpCtrl', helpController);
 
-  function homeController() {
+  function helpController() {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
