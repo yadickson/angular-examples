@@ -20,6 +20,7 @@ $ bower install --save jquery@~1.12.0
 $ bower install --save angular@~1.3.20
 $ bower install --save angular-ui-router@~0.2.0
 $ bower install --save-dev mocha@~3.5.3
+$ bower install --save-dev angular-mocks@~1.3.20
 
 ```
 
