@@ -21,6 +21,7 @@ $ sudo apt-get install -y build-essential
 $ sudo npm install npm -g
 $ sudo npm install bower -g
 $ sudo npm install gulp-cli -g
+$ sudo npm install mocha -g
 ```
 
 
