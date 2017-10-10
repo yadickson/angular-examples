@@ -1,0 +1,39 @@
+# Yeoman app example
+
+
+## Make the basic structure
+
+```
+$ yo webapp Yeoman
+```
+
+### Select:
+
+- Sass
+- Bootstrap 3
+- BDD
+
+### Install dependencies
+
+```
+$ bower install --save jquery@~1.12.0
+$ bower install --save angular@~1.3.20
+$ bower install --save angular-ui-router@~0.2.0
+$ bower install --save-dev mocha@~3.5.3
+
+```
+
+### Prepare application
+
+```
+bower install && npm install
+```
+
+### Run app
+
+```
+$ gulp build
+$ gulp serve
+$ gulp serve:test
+```
+
