@@ -74,3 +74,10 @@ $ yo angular:view Help
 $ yo angular:view Header
 $ yo angular:view Footer
 ```
+
+### Add directive
+
+```
+$ yo angular:directive ngButtonSearch
+```
+
