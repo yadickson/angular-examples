@@ -47,6 +47,8 @@ $ gulp serve:dist
 ```
 $ yo angular:controller Home
 $ yo angular:controller Help
+$ yo angular:controller Header
+$ yo angular:controller Footer
 ```
 
 ### Add constant
@@ -60,4 +62,6 @@ $ yo angular:constant Constants
 ```
 $ yo angular:view Home
 $ yo angular:view Help
+$ yo angular:view Header
+$ yo angular:view Footer
 ```
