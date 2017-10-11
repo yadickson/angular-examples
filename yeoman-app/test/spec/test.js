@@ -32,5 +32,26 @@
       });
     });
 
+    describe('Yeoman Application Controller', function() {
+
+      beforeEach(angular.mock.module('yeomanApp'));
+
+      var MainCtrl,
+        scope;
+
+      // Initialize the controller and a mock scope
+      beforeEach(inject(function($controller, $rootScope) {
+        scope = $rootScope.$new();
+        MainCtrl = $controller('MainCtrl', {
+          $scope: scope
+          // place here mocked dependencies
+        });
+      }));
+
+      it('Check MainCtrl', function() {
+        expect(MainCtrl).to.exist;
+      });
+    });
+
   });
 })();
