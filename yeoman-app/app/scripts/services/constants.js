@@ -10,6 +10,6 @@
    */
   angular
     .module('yeomanApp')
-    .constant("CONTEXT_ROOT", '/YeomanApp/');
+    .constant('CONTEXT_ROOT', '/YeomanApp/');
 
 })();

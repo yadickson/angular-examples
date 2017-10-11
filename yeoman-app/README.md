@@ -54,6 +54,6 @@ $ yo angular:controller Help
 ### Add constant
 
 ```
-$ yo angular:constant ContextRoot
+$ yo angular:constant Constants
 ```
 
