@@ -4,7 +4,7 @@
   describe('Check constants', function() {
 
       // load the controller's module
-      beforeEach(module('yeomanApp'));
+      beforeEach(angular.mock.module('yeomanApp'));
 
       // instantiate service
       var contextRoot;

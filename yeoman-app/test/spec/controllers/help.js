@@ -5,7 +5,7 @@
     describe('maybe a bit more context here', function() {
 
       // load the controller's module
-      beforeEach(module('yeomanApp'));
+      beforeEach(angular.mock.module('yeomanApp'));
 
       var HelpCtrl,
         scope;

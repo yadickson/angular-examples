@@ -24,7 +24,7 @@
 
     describe('Yeoman Application Mock', function() {
 
-      var moduleApp = module('yeomanApp');
+      var moduleApp = angular.mock.module('yeomanApp');
 
       it('Check application module mock', function() {
         expect(moduleApp).to.exist;
