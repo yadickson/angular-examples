@@ -19,7 +19,7 @@ module.exports = function(config) {
       'test/spec/**/*.js'
     ],
 
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'mocha', 'junit', 'coverage'],
 
     hostname: 'localhost',
 
@@ -36,7 +36,7 @@ module.exports = function(config) {
     },
 
     coverageReporter: {
-      dir: 'coverage',
+      dir: 'reports/coverage',
       reporters: [{
           type: 'html',
           subdir: 'report-html'
@@ -71,6 +71,28 @@ module.exports = function(config) {
           file: 'text-summary.txt'
         },
       ]
+    },
+
+    mochaReporter: {
+      colors: {
+        success: 'blue',
+        info: 'bgGreen',
+        warning: 'cyan',
+        error: 'bgRed'
+      },
+      symbols: {
+        success: '+',
+        info: '#',
+        warning: '!',
+        error: 'x'
+      },
+      output: 'autowatch'
+    },
+
+    junitReporter: {
+      outputDir: 'reports',
+      outputFile: 'test-results.xml',
+      useBrowserName: false
     }
 
   });

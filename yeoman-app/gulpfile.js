@@ -92,7 +92,7 @@ gulp.task('extras', () => {
   }).pipe(gulp.dest('dist'));
 });
 
-gulp.task('clean', del.bind(null, ['.tmp', 'dist', 'coverage']));
+gulp.task('clean', del.bind(null, ['.tmp', 'dist', 'coverage', 'reports']));
 
 gulp.task('serve', () => {
   runSequence(['clean', 'wiredep'], ['styles', 'scripts', 'fonts'], () => {
@@ -181,7 +181,7 @@ gulp.task('default', () => {
 
 const karma = require('karma').Server;
 
-gulp.task('coverage', function() {
+gulp.task('test', function() {
   new karma({
     configFile: __dirname + '/karma.config.js',
     singleRun: true

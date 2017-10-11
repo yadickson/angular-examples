@@ -27,10 +27,13 @@ $ bower install --save-dev mocha@~3.5.3
 $ bower install --save-dev angular-mocks@~1.3.20
 ```
 
-### Install coverage tools
+### Install unit test/coverage tools
 
 ```
-$ npm install --save-dev karma chai mocha karma-mocha karma-chai karma-bro karma-phantomjs-launcher karma-coverage
+$ npm install --save-dev karma chai mocha
+$ npm install --save-dev karma-chai karma-bro karma-mocha karma-phantomjs-launcher
+$ npm install --save-dev karma-coverage
+$ npm install --save-dev karma-mocha-reporter karma-junit-reporter
 ```
 
 ### Prepare application
