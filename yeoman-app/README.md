@@ -1,6 +1,5 @@
 # Yeoman app example
 
-
 ## Make the basic structure
 
 ```
@@ -26,7 +25,6 @@ $ bower install --save angular-ui-router@~0.2.0
 ```
 $ bower install --save-dev mocha@~3.5.3
 $ bower install --save-dev angular-mocks@~1.3.20
-
 ```
 
 ### Prepare application
@@ -57,3 +55,9 @@ $ yo angular:controller Help
 $ yo angular:constant Constants
 ```
 
+### Add view
+
+```
+$ yo angular:view Home
+$ yo angular:view Help
+```
