@@ -176,3 +176,14 @@ gulp.task('default', () => {
     runSequence(['clean', 'wiredep'], 'build', resolve);
   });
 });
+
+// Coverage report
+
+const karma = require('karma').Server;
+
+gulp.task('coverage', function() {
+  new karma({
+    configFile: __dirname + '/karma.config.js',
+    singleRun: true
+  }).start();
+});
