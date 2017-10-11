@@ -22,9 +22,17 @@
       .state('root', {
         abstract: true,
         views: {
-          'header@': {},
+          'header@': {
+            controller: 'HeaderCtrl',
+            templateUrl: 'views/header.html',
+            controllerAs: 'vm'
+          },
           'main@': {},
-          'footer@': {}
+          'footer@': {
+            controller: 'FooterCtrl',
+            templateUrl: 'views/footer.html',
+            controllerAs: 'vm'
+          }
         }
       })
       .state('home', {
