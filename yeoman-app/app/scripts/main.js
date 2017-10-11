@@ -14,7 +14,33 @@
     .module('yeomanApp')
     .controller('MainCtrl', mainController);
 
-  function mainConfig() {}
+  mainConfig.$inject = ['$stateProvider', '$urlRouterProvider'];
+
+  function mainConfig($stateProvider, $urlRouterProvider) {
+
+    $stateProvider
+      .state('root', {
+        abstract: true,
+        views: {
+          'header@': {},
+          'main@': {},
+          'footer@': {}
+        }
+      })
+      .state('home', {
+        parent: 'root',
+        url: '/home',
+        views: {
+          'main@': {
+            controller: 'HomeCtrl',
+            templateUrl: 'views/home.html',
+            controllerAs: 'vm'
+          }
+        }
+      });
+
+    $urlRouterProvider.otherwise('/home');
+  }
 
   function mainController() {}
 
