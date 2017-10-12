@@ -21,6 +21,7 @@
 
     function postLink(scope, element, attrs, ngModel) {
 
+      element.bind('keypress keydown', ValidateOnlyNumber.validateKeyEvent);
       element.bind('propertychange keyup paste', onChange);
 
       //DOM -> MODEL
@@ -31,7 +32,6 @@
       function onChange() {
         this.value = ValidateOnlyNumber.validateNumber(this.value);
       }
-
     }
 
   };

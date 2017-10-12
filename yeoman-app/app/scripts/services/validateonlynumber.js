@@ -11,15 +11,26 @@
   angular.module('yeomanApp')
     .factory('ValidateOnlyNumber', validateOnlyNumber);
 
-  function validateOnlyNumber() {
+  validateOnlyNumber.$inject = ['Keyboard'];
+
+  function validateOnlyNumber(Keyboard) {
 
     return {
-      validateNumber: validateNumber
+      validateNumber: validateNumber,
+      validateKeyEvent: validateKeyEvent
     };
 
     function validateNumber(value) {
       var str = value || '';
       return str.replace(/\D/g, '');
+    }
+
+    function validateKeyEvent(event) {
+      if (!Keyboard.isOnlyNumber(event) && !Keyboard.isCtrlKeys(event)) {
+        console.log('fff');
+        event.preventDefault();
+        return false;
+      }
     }
   }
 
