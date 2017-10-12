@@ -10,7 +10,9 @@
   angular.module('yeomanApp')
     .directive('onlyNumber', onlyNumberDirective);
 
-  function onlyNumberDirective() {
+  onlyNumberDirective.$inject = ['ValidateOnlyNumber'];
+
+  function onlyNumberDirective(ValidateOnlyNumber) {
     return {
       require: 'ngModel',
       restrict: 'A',
@@ -28,16 +30,11 @@
       ngModel.$formatters.unshift(onUpdate);
 
       function onChange() {
-        this.value = validNumber(this.value);
+        this.value = ValidateOnlyNumber.validateNumber(this.value);
       }
 
       function onUpdate(value) {
-        return validNumber(value);
-      }
-
-      function validNumber(value) {
-        var str = value || '';
-        return str.replace(/\D/g, '');
+        return ValidateOnlyNumber.validateNumber(value);
       }
 
     }
