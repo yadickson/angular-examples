@@ -79,5 +79,12 @@ $ yo angular:view Footer
 
 ```
 $ yo angular:directive ngButtonSearch
+$ yo angular:directive onlyNumber
+```
+
+### Add factory
+
+```
+$ yo angular:factory ValidateOnlyNumber
 ```
 
