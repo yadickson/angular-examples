@@ -18,12 +18,6 @@
       expect(element.val()).to.empty;
     }));
 
-    it('Check only-number set default value', inject(function($compile) {
-      element = angular.element('<input type="text" ng-model="numericValue" only-number default="0"></input>');
-      element = $compile(element)(scope);
-      expect(element.val()).to.equal('0');
-    }));
-
     it('Check only-number keyup event', inject(function($compile) {
       element = angular.element('<input type="text" ng-model="numericValue" only-number></input>');
       element = $compile(element)(scope);

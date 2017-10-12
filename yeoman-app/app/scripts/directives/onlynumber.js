@@ -21,20 +21,15 @@
 
     function postLink(scope, element, attrs, ngModel) {
 
-      element.val(attrs.default || ngModel.value || '');
-
       element.bind('propertychange keyup paste', onChange);
+
       //DOM -> MODEL
-      ngModel.$parsers.unshift(onUpdate);
+      ngModel.$parsers.unshift(ValidateOnlyNumber.validateNumber);
       //MODEL -> DOM
-      ngModel.$formatters.unshift(onUpdate);
+      ngModel.$formatters.unshift(ValidateOnlyNumber.validateNumber);
 
       function onChange() {
         this.value = ValidateOnlyNumber.validateNumber(this.value);
-      }
-
-      function onUpdate(value) {
-        return ValidateOnlyNumber.validateNumber(value);
       }
 
     }
