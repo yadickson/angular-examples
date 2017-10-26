@@ -9,6 +9,7 @@ const runSequence = require('run-sequence');
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
+const order = require("gulp-order");
 const mainBowerFiles = require('main-bower-files');
 const angularFilesort = require('gulp-angular-filesort');
 const series = require('stream-series');
@@ -200,14 +201,23 @@ gulp.task('test', function() {
 
 gulp.task('compile', () => {
 
-  var vendor = gulp.src(mainBowerFiles({paths: {bowerDirectory: 'node_modules'}, filter: '**/*.js'}))
+  var vendor = gulp.src(mainBowerFiles({paths: {bowerDirectory: 'bower_components'}, filter: '**/*.js'}))
     .pipe(angularFilesort())
+    .pipe(order([
+      'jquery.js',
+      'angular.js',
+      '*'
+    ]))
     .pipe(concat('vendors.js'))
     .pipe(uglify())
     .pipe(gulp.dest('dist/scripts'));
 
   var app = gulp.src('app/scripts/**/*.js')
     .pipe(angularFilesort())
+    .pipe(order([
+      'main.js',
+      '*'
+    ]))
     .pipe(concat('app.js'))
     .pipe(uglify())
     .pipe(gulp.dest('dist/scripts'));
