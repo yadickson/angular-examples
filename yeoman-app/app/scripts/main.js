@@ -3,7 +3,8 @@
 
   angular
     .module('yeomanApp', [
-      'ui.router'
+      'ui.router',
+      'angularYS.DirectiveOnlyNumber'
     ]);
 
   angular

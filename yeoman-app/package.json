@@ -1,18 +1,32 @@
 {
-  "private": true,
-  "engines": {
-    "node": ">=4"
+  "name": "yeoman-app",
+  "version": "1.0.0",
+  "description": "Yeoman app base",
+  "main": "",
+  "author": "Yadickson Soto <yadickson@gmail.com>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "angular": "~1.3.20",
+    "angular-ui-router": "~0.2.0",
+    "angular-ys-directive-only-number": "~1.0.0",
+    "bootstrap": "~3.3.0",
+    "bootstrap-sass": "^3.3.7",
+    "jquery": "~1.12.0",
+    "plumber": "~0.4.0"
   },
   "devDependencies": {
-    "babel-core": "^6.4.0",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-register": "^6.5.2",
+    "angular-mocks": "~1.3.20",
+    "babel-cli": "^6.26.0",
+    "babel-preset-babili": "^0.1.4",
+    "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.2.1",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
     "del": "^2.2.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.1",
     "gulp-babel": "^6.1.1",
+    "gulp-bundle-assets": "^2.29.0",
     "gulp-cache": "^0.4.2",
     "gulp-cssnano": "^2.0.0",
     "gulp-eslint": "^3.0.0",
@@ -31,14 +45,21 @@
     "karma-bro": "^0.11.1",
     "karma-chai": "^0.1.0",
     "karma-coverage": "^1.1.1",
+    "karma-istanbul": "^0.0.2",
     "karma-junit-reporter": "^1.2.0",
     "karma-mocha": "^1.3.0",
-    "karma-mocha-reporter": "^2.2.4",
+    "karma-mocha-reporter": "^2.2.5",
     "karma-phantomjs-launcher": "^1.0.4",
-    "main-bower-files": "^2.5.0",
+    "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
+    "rimraf": "^2.6.2",
     "run-sequence": "^1.2.2",
     "wiredep": "^4.0.0"
+  },
+  "scripts": {
+    "clean": "./node_modules/.bin/rimraf dist coverage reports *.tgz yarn* package-lock.json",
+    "test": "./node_modules/.bin/karma start --single-run --browser PhantomJS",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "eslintConfig": {
     "env": {

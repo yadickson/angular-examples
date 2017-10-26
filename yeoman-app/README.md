@@ -12,34 +12,54 @@ $ yo webapp Yeoman
 - Bootstrap 3
 - BDD
 
-### Install dependencies
+### Add dependencies
 
 ```
-$ bower install --save jquery@~1.12.0
-$ bower install --save angular@~1.3.20
-$ bower install --save angular-ui-router@~0.2.0
+$ yarn add jquery@~1.12.0
+$ yarn add angular@~1.3.20
+$ yarn add angular-ui-router@~0.2.0
+$ yarn add angular-ys-directive-only-number@~1.0.0
 ```
 
-### Install develop dependencies
+### Install style dependencies
 
 ```
-$ bower install --save-dev mocha@~3.5.3
-$ bower install --save-dev angular-mocks@~1.3.20
+$ yarn add bootstrap@~3.3.0
+$ npm install --save bootstrap-sass@~3.3.5
 ```
 
-### Install unit test/coverage tools
+### Add develop dependencies
 
 ```
-$ npm install --save-dev karma chai mocha
-$ npm install --save-dev karma-chai karma-bro karma-mocha karma-phantomjs-launcher
-$ npm install --save-dev karma-coverage
-$ npm install --save-dev karma-mocha-reporter karma-junit-reporter
+$ yarn add --dev mocha@~3.5.3
+$ yarn add --dev chai@~4.1.2
+$ yarn add --dev angular-mocks@~1.3.20
+```
+
+### Add compiler dependencies
+
+```
+$ yarn add --dev mkdirp rimraf
+$ yarn add --dev babel-cli babel-preset-env
+$ yarn add --dev babel-preset-babili
+```
+
+### Add unit test/coverage tools
+
+```
+$ yarn add --dev karma
+$ yarn add --dev chai karma-chai
+$ yarn add --dev mocha karma-mocha
+$ yarn add --dev karma-bro karma-phantomjs-launcher
+$ yarn add --dev karma-coverage karma-istanbul
+$ yarn add --dev karma-mocha-reporter karma-junit-reporter
+$ yarn add --dev coveralls
 ```
 
 ### Prepare application
 
 ```
-$ bower install && npm install
+$ yarn install
 ```
 
 ### Run app
@@ -87,4 +107,3 @@ $ yo angular:directive onlyNumber
 ```
 $ yo angular:factory ValidateOnlyNumber
 ```
-
