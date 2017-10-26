@@ -3,10 +3,20 @@ const gulp = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');
 const browserSync = require('browser-sync').create();
 const del = require('del');
+const wiredep = require('wiredep').stream;
 const runSequence = require('run-sequence');
 
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
+
+const mainBowerFiles = require('main-bower-files');
+const angularFilesort = require('gulp-angular-filesort');
+const series = require('stream-series');
+const es = require('event-stream');
+const inject = require('gulp-inject');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
+const sass = require('gulp-sass');
 
 let dev = true;
 
@@ -77,8 +87,8 @@ gulp.task('images', () => {
 });
 
 gulp.task('fonts', () => {
-  return gulp.src(['./node_modules/**/**/*.{eot,svg,ttf,woff,woff2}',
-  'app/fonts/**/*'])
+  return gulp.src(require('main-bower-files')('**/*.{eot,svg,ttf,woff,woff2}', function (err) {})
+    .concat('app/fonts/**/*'))
     .pipe(gulp.dest('.tmp/fonts'))
     .pipe(gulp.dest('dist/fonts'));
 });
@@ -95,14 +105,14 @@ gulp.task('extras', () => {
 gulp.task('clean', del.bind(null, ['.tmp', 'dist', 'coverage', 'reports']));
 
 gulp.task('serve', () => {
-  runSequence(['clean'], ['styles', 'scripts', 'fonts'], () => {
+  runSequence(['clean', 'wiredep'], ['styles', 'scripts', 'fonts'], () => {
     browserSync.init({
       notify: false,
       port: 9000,
       server: {
         baseDir: ['.tmp', 'app'],
         routes: {
-          '/node_modules': 'node_modules'
+          '/bower_components': 'bower_components'
         }
       }
     });
@@ -116,6 +126,7 @@ gulp.task('serve', () => {
     gulp.watch('app/styles/**/*.scss', ['styles']);
     gulp.watch('app/scripts/**/*.js', ['scripts']);
     gulp.watch('app/fonts/**/*', ['fonts']);
+    gulp.watch('bower.json', ['wiredep', 'fonts']);
   });
 });
 
@@ -138,7 +149,7 @@ gulp.task('serve:test', ['scripts'], () => {
       baseDir: 'test',
       routes: {
         '/scripts': '.tmp/scripts',
-        '/node_modules': 'node_modules'
+        '/bower_components': 'bower_components'
       }
     }
   });
@@ -148,6 +159,23 @@ gulp.task('serve:test', ['scripts'], () => {
   gulp.watch('test/spec/**/*.js', ['lint:test']);
 });
 
+// inject bower components
+gulp.task('wiredep', () => {
+  gulp.src('app/styles/*.scss')
+    .pipe($.filter(file => file.stat && file.stat.size))
+    .pipe(wiredep({
+      ignorePath: /^(\.\.\/)+/
+    }))
+    .pipe(gulp.dest('app/styles'));
+
+  gulp.src('app/*.html')
+    .pipe(wiredep({
+      exclude: ['bootstrap-sass'],
+      ignorePath: /^(\.\.\/)*\.\./
+    }))
+    .pipe(gulp.dest('app'));
+});
+
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
@@ -155,6 +183,44 @@ gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
 gulp.task('default', () => {
   return new Promise(resolve => {
     dev = false;
-    runSequence(['clean'], 'build', resolve);
+    runSequence(['clean', 'wiredep'], 'build', resolve);
   });
+});
+
+// Coverage report
+
+const karma = require('karma').Server;
+
+gulp.task('test', function() {
+  new karma({
+    configFile: __dirname + '/karma.config.js',
+    singleRun: true
+  }).start();
+});
+
+gulp.task('compile', () => {
+
+  var vendor = gulp.src(mainBowerFiles({paths: {bowerDirectory: 'node_modules'}, filter: '**/*.js'}))
+    .pipe(angularFilesort())
+    .pipe(concat('vendors.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/scripts'));
+
+  var app = gulp.src('app/scripts/**/*.js')
+    .pipe(angularFilesort())
+    .pipe(concat('app.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/scripts'));
+
+  var cssApp = gulp.src('app/styles/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(concat('app.css'))
+    .pipe(gulp.dest('dist/css'));
+
+  var html = gulp.src('app/**/*.html')
+    .pipe(inject(series(vendor, app, cssApp), {
+      ignorePath: 'dist', addRootSlash : false
+    }))
+    .pipe(gulp.dest('dist'));
+
 });

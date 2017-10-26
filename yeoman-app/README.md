@@ -12,20 +12,30 @@ $ yo webapp Yeoman
 - Bootstrap 3
 - BDD
 
-### Add dependencies
+### Add dependencies bower support
 
 ```
-$ yarn add jquery@~1.12.0
-$ yarn add angular@~1.3.20
-$ yarn add angular-ui-router@~0.2.0
+$ bower install --save bootstrap@~3.3.0
+$ bower install --save jquery@~1.12.0
+$ bower install --save angular@~1.3.20
+$ bower install --save angular-ui-router@~0.2.0
+$ bower install --save jquery@~1.12.0
+$ bower install --save angular@~1.3.20
+$ bower install --save angular-ui-router@~0.2.0
+```
+
+### Add dependencias
+
+```
+$ yarn add angular-ys-factory-keyboard@~1.0.0
+$ yarn add angular-ys-service-keyboard@~1.0.0
 $ yarn add angular-ys-directive-only-number@~1.0.0
 ```
 
 ### Install style dependencies
 
 ```
-$ yarn add bootstrap@~3.3.0
-$ npm install --save bootstrap-sass@~3.3.5
+$ yarn add --dev bootstrap-sass@~3.3.5
 ```
 
 ### Add develop dependencies
@@ -59,7 +69,7 @@ $ yarn add --dev coveralls
 ### Prepare application
 
 ```
-$ yarn install
+$ bower install && yarn install
 ```
 
 ### Run app
