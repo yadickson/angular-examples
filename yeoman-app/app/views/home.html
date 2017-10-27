@@ -1,39 +1,47 @@
-<p>This is the Home view.</p>
-<p>
-   <button type = "button" class = "btn btn-default">
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+  <p>This is the Home view.</p>
+  <p>
+    <button type="button" class="btn btn-default">
       <span class = "glyphicon glyphicon-sort-by-attributes"></span>
    </button>
 
-   <button type = "button" class = "btn btn-default">
+    <button type="button" class="btn btn-default">
       <span class = "glyphicon glyphicon-sort-by-attributes-alt"></span>
    </button>
 
-   <button type = "button" class = "btn btn-default">
+    <button type="button" class="btn btn-default">
       <span class = "glyphicon glyphicon-sort-by-order"></span>
    </button>
 
-   <button type = "button" class = "btn btn-default">
+    <button type="button" class="btn btn-default">
       <span class = "glyphicon glyphicon-sort-by-order-alt"></span>
    </button>
-</p>
+  </p>
 
-<button type = "button" class = "btn btn-default btn-lg">
+  <button type="button" class="btn btn-default btn-lg">
+   <span class = "glyphicon glyphicon-user"></span>User
+</button>
+
+  <button type="button" class="btn btn-default btn-sm">
    <span class = "glyphicon glyphicon-user"></span>
 
    User
 </button>
 
-<button type = "button" class = "btn btn-default btn-sm">
+  <button type="button" class="btn btn-default btn-xs">
    <span class = "glyphicon glyphicon-user"></span>
 
    User
 </button>
 
-<button type ="button" class = "btn btn-default btn-xs">
-   <span class = "glyphicon glyphicon-user"></span>
+  <input type='text' data-ng-model='numericValue' data-ys-only-number="" />
+  <p>{{numericValue}}</p>
+</body>
 
-   User
-</button>
-
-<input type='text' ng-model='numericValue' ys-only-number></input>
-<p>{{numericValue}}</p>
+</html>
