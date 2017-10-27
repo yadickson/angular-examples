@@ -9,8 +9,10 @@ const runSequence = require('run-sequence');
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
-const order = require("gulp-order");
-const mainBowerFiles = require('main-bower-files');
+const order = require('gulp-order');
+const print = require('gulp-print');
+const mainNpmFiles = require('gulp-main-npm-files');
+const babel = require('gulp-babel');
 const angularFilesort = require('gulp-angular-filesort');
 const series = require('stream-series');
 const es = require('event-stream');
@@ -201,13 +203,16 @@ gulp.task('test', function() {
 
 gulp.task('compile', () => {
 
-  var vendor = gulp.src(mainBowerFiles({paths: {bowerDirectory: 'bower_components'}, filter: '**/*.js'}))
-    .pipe(angularFilesort())
+  var vendor = gulp.src(mainNpmFiles().concat('!node_modules/**/index.js').concat('node_modules/angular/angular.js'))
     .pipe(order([
       'jquery.js',
       'angular.js',
       '*'
     ]))
+    .pipe(babel({presets: ['env', 'babili']}))
+    .pipe(print(path => {
+      console.log(path);
+    }))
     .pipe(concat('vendors.js'))
     .pipe(uglify())
     .pipe(gulp.dest('dist/scripts'));
@@ -218,6 +223,10 @@ gulp.task('compile', () => {
       'main.js',
       '*'
     ]))
+    .pipe(print(path => {
+      console.log(path);
+    }))
+    .pipe(babel({presets: ['env', 'babili']}))
     .pipe(concat('app.js'))
     .pipe(uglify())
     .pipe(gulp.dest('dist/scripts'));
