@@ -9,9 +9,12 @@ const runSequence = require('run-sequence');
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
+const rename = require('gulp-rename');
 const order = require('gulp-order');
 const print = require('gulp-print');
 const mainNpmFiles = require('gulp-main-npm-files');
+const styleNpmFiles = require('gulp-style-npm-files');
+const fontNpmFiles = require('gulp-font-npm-files');
 const babel = require('gulp-babel');
 const angularFilesort = require('gulp-angular-filesort');
 const series = require('stream-series');
@@ -105,7 +108,7 @@ gulp.task('extras', () => {
   }).pipe(gulp.dest('dist'));
 });
 
-gulp.task('clean', del.bind(null, ['.tmp', 'dist', 'coverage', 'reports']));
+gulp.task('clean', del.bind(null, ['.tmp', 'build', 'dist', 'coverage', 'reports']));
 
 gulp.task('serve', () => {
   runSequence(['clean', 'wiredep'], ['styles', 'scripts', 'fonts'], () => {
@@ -203,19 +206,21 @@ gulp.task('test', function() {
 
 gulp.task('compile', () => {
 
-  var vendor = gulp.src(mainNpmFiles().concat('!node_modules/**/index.js').concat('node_modules/angular/angular.js'))
+  var vendor = gulp.src(mainNpmFiles()
+        .concat('!node_modules/**/index.js')
+        .concat('node_modules/angular/angular.js')
+        .concat('node_modules/bootstrap/**/bootstrap.js')
+      )
     .pipe(order([
       'jquery.js',
       'angular.js',
+      'bootstrap.js',
       '*'
     ]))
     .pipe(babel({presets: ['env', 'babili']}))
-    .pipe(print(path => {
-      console.log(path);
-    }))
     .pipe(concat('vendors.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/scripts'));
+    .pipe(gulp.dest('dist/js'));
 
   var app = gulp.src('app/scripts/**/*.js')
     .pipe(angularFilesort())
@@ -223,23 +228,29 @@ gulp.task('compile', () => {
       'main.js',
       '*'
     ]))
-    .pipe(print(path => {
-      console.log(path);
-    }))
     .pipe(babel({presets: ['env', 'babili']}))
     .pipe(concat('app.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/scripts'));
+    .pipe(gulp.dest('dist/js'));
+
+  var cssVendor = gulp.src(styleNpmFiles())
+    .pipe(concat('vendor.css'))
+    .pipe(gulp.dest('dist/css'));
 
   var cssApp = gulp.src('app/styles/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(concat('app.css'))
     .pipe(gulp.dest('dist/css'));
 
+  var fonst = gulp.src(fontNpmFiles()
+      .concat('app/fonts/*')
+    )
+    .pipe(rename({dirname: ''}))
+    .pipe(gulp.dest('dist/fonts'));
+
   var html = gulp.src('app/**/*.html')
-    .pipe(inject(series(vendor, app, cssApp), {
+    .pipe(inject(series(vendor, app, cssVendor, cssApp), {
       ignorePath: 'dist', addRootSlash : false
     }))
     .pipe(gulp.dest('dist'));
-
 });
