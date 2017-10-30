@@ -7,3 +7,5 @@ coverage/
 reports/
 package-lock.json
 yarn*
+*.tgz
+*.zip

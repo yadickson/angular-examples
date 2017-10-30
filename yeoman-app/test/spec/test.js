@@ -2,7 +2,7 @@
   'use strict';
 
   describe('Check application', function() {
-
+/*
     describe('Yeoman Application', function() {
 
       var moduleApp = angular.module('yeomanApp');
@@ -21,7 +21,7 @@
         expect(dependencies).to.be.an('array').that.includes('ui.router');
       });
     });
-
+*/
     describe('Yeoman Application Mock', function() {
 
       var moduleApp = angular.mock.module('yeomanApp');
