@@ -232,7 +232,6 @@ function vendorJS() {
     return gulp.src(mainNpmFiles()
             .concat('!node_modules/**/index.js')
             .concat('node_modules/angular/angular.js')
-            .concat('node_modules/angular-ui-router/release/angular-ui-router.js')
             .concat('node_modules/angular-mocks/angular-mocks.js')
         )
         .pipe(order([
