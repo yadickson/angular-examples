@@ -10,6 +10,7 @@ const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
 const rename = require('gulp-rename');
+const fs = require('file-system');
 const order = require('gulp-order');
 const print = require('gulp-print');
 const mainNpmFiles = require('gulp-main-npm-files');
@@ -269,7 +270,9 @@ function karmaFiles() {
 
 gulp.task('pretest', function() {
 
-    return gulp.src('karma.conf.js')
+    fs.writeFileSync('.karma.conf.js', fs.readFileSync('karma.conf.js'));
+
+    return gulp.src('.karma.conf.js')
         .pipe(karmaFiles())
         .pipe(gulp.dest('./'));
 });
@@ -277,7 +280,7 @@ gulp.task('pretest', function() {
 gulp.task('karma', function() {
 
     return new karma({
-        configFile: __dirname + '/karma.conf.js',
+        configFile: __dirname + '/.karma.conf.js',
         singleRun: true
     }).start();
 });
