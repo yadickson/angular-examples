@@ -1,9 +1,7 @@
-// generated on 2017-10-10 using generator-webapp 3.0.1
 const gulp = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');
 const browserSync = require('browser-sync').create();
 const del = require('del');
-const wiredep = require('wiredep').stream;
 const runSequence = require('run-sequence');
 
 const $ = gulpLoadPlugins();
@@ -25,213 +23,59 @@ const inject = require('gulp-inject');
 const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
+const karma = require('karma').Server;
+const jshint = require("gulp-jshint");
 
 let dev = true;
 let minimal = false;
 let dest = 'dist';
 
-gulp.task('styles', () => {
-    return gulp.src('app/styles/*.scss')
-        .pipe($.plumber())
-        .pipe($.if(dev, $.sourcemaps.init()))
-        .pipe($.sass.sync({
-            outputStyle: 'expanded',
-            precision: 10,
-            includePaths: ['.']
-        }).on('error', $.sass.logError))
-        .pipe($.autoprefixer({
-            browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']
-        }))
-        .pipe($.if(dev, $.sourcemaps.write()))
-        .pipe(gulp.dest('.tmp/styles'))
-        .pipe(reload({
-            stream: true
-        }));
-});
-
-gulp.task('scripts', () => {
-    return gulp.src('app/scripts/**/*.js')
-        .pipe($.plumber())
-        .pipe($.if(dev, $.sourcemaps.init()))
-        .pipe($.babel())
-        .pipe($.if(dev, $.sourcemaps.write('.')))
-        .pipe(gulp.dest('.tmp/scripts'))
-        .pipe(reload({
-            stream: true
-        }));
-});
-
-function lint(files) {
-    return gulp.src(files)
-        .pipe($.eslint({
-            fix: true
-        }))
-        .pipe(reload({
-            stream: true,
-            once: true
-        }))
-        .pipe($.eslint.format())
-        .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
+const paths = {
+    appScripts: ['app/scripts/**/*.js'],
+    appStyles: ['app/styles/*.scss'],
+    appViews: 'app/**/*.html',
+    appIcon: 'app/*.ico',
+    appImages: 'app/images/**/*',
+    appFonts: 'app/fonts/**/*',
+    appTests: ['test/**/*.js'],
+    testHtml: 'test/*.html'
 }
 
-gulp.task('lint', () => {
-    return lint('app/scripts/**/*.js')
-        .pipe(gulp.dest('app/scripts'));
-});
-gulp.task('lint:test', () => {
-    return lint('test/spec/**/*.js')
-        .pipe(gulp.dest('test/spec'));
-});
-
-gulp.task('html', ['styles', 'scripts'], () => {
-    return gulp.src('app/**/*.html')
-        .pipe($.useref({
-            searchPath: ['.tmp', 'app', '.']
-        }))
-        .pipe($.if(/\.js$/, $.uglify({
-            compress: {
-                drop_console: true
-            }
-        })))
-        .pipe($.if(/\.css$/, $.cssnano({
-            safe: true,
-            autoprefixer: false
-        })))
-        .pipe($.if(/\.html$/, $.htmlmin({
-            collapseWhitespace: true,
-            minifyCSS: true,
-            minifyJS: {
-                compress: {
-                    drop_console: true
-                }
-            },
-            processConditionalComments: true,
-            removeComments: true,
-            removeEmptyAttributes: true,
-            removeScriptTypeAttributes: true,
-            removeStyleLinkTypeAttributes: true
-        })))
-        .pipe(gulp.dest('dist'));
-});
-
-gulp.task('images', () => {
-    return gulp.src('app/images/**/*')
-        .pipe($.cache($.imagemin()))
-        .pipe(gulp.dest('dist/images'));
-});
-
-gulp.task('fonts', () => {
-    return gulp.src(require('main-bower-files')('**/*.{eot,svg,ttf,woff,woff2}', function(err) {})
-            .concat('app/fonts/**/*'))
-        .pipe(gulp.dest('.tmp/fonts'))
-        .pipe(gulp.dest('dist/fonts'));
-});
-
-gulp.task('extras', () => {
-    return gulp.src([
-        'app/*',
-        '!app/*.html'
-    ], {
-        dot: true
-    }).pipe(gulp.dest('dist'));
-});
-
-gulp.task('clean', del.bind(null, ['.tmp', 'build', 'dist', 'coverage', 'reports']));
-
-gulp.task('serve', () => {
-    runSequence(['clean', 'wiredep'], ['styles', 'scripts', 'fonts'], () => {
-        browserSync.init({
-            notify: false,
-            port: 9000,
-            server: {
-                baseDir: ['.tmp', 'app'],
-                routes: {
-                    '/bower_components': 'bower_components'
-                }
-            }
-        });
-
-        gulp.watch([
-            'app/*.html',
-            'app/images/**/*',
-            '.tmp/fonts/**/*'
-        ]).on('change', reload);
-
-        gulp.watch('app/styles/**/*.scss', ['styles']);
-        gulp.watch('app/scripts/**/*.js', ['scripts']);
-        gulp.watch('app/fonts/**/*', ['fonts']);
-        gulp.watch('bower.json', ['wiredep', 'fonts']);
-    });
-});
-
-gulp.task('serve:dist', ['default'], () => {
-    browserSync.init({
-        notify: false,
-        port: 9000,
-        server: {
-            baseDir: ['dist']
-        }
-    });
-});
-
-gulp.task('serve:test', ['scripts'], () => {
-    browserSync.init({
-        notify: false,
-        port: 9000,
-        ui: false,
-        server: {
-            baseDir: 'test',
-            routes: {
-                '/scripts': '.tmp/scripts',
-                '/bower_components': 'bower_components'
-            }
-        }
-    });
-
-    gulp.watch('app/scripts/**/*.js', ['scripts']);
-    gulp.watch(['test/spec/**/*.js', 'test/index.html']).on('change', reload);
-    gulp.watch('test/spec/**/*.js', ['lint:test']);
-});
-
-// inject bower components
-gulp.task('wiredep', () => {
-    gulp.src('app/styles/*.scss')
-        .pipe($.filter(file => file.stat && file.stat.size))
-        .pipe(wiredep({
-            ignorePath: /^(\.\.\/)+/
-        }))
-        .pipe(gulp.dest('app/styles'));
-
-    gulp.src('app/*.html')
-        .pipe(wiredep({
-            exclude: ['bootstrap-sass'],
-            ignorePath: /^(\.\.\/)*\.\./
-        }))
-        .pipe(gulp.dest('app'));
-});
-
-gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
-    return gulp.src('dist/**/*').pipe($.size({
-        title: 'build',
-        gzip: true
-    }));
-});
-
-gulp.task('default', () => {
-    return new Promise(resolve => {
-        dev = false;
-        runSequence(['clean', 'wiredep'], 'build', resolve);
-    });
-});
-
-// Coverage report
-
-const karma = require('karma').Server;
-
-function vendorJS() {
+function vendorScripts() {
     return gulp.src(mainNpmFiles()
             .concat('!node_modules/**/index.js')
             .concat('node_modules/angular/angular.js')
+            .concat('node_modules/bootstrap/**/bootstrap.js')
+        )
+        .pipe(order([
+            'jquery.js',
+            'angular.js',
+            'angular-ui-router.js',
+            'bootstrap.js',
+            '*'
+        ]));
+}
+
+function appScripts() {
+    return gulp.src(paths.appScripts)
+        .pipe(angularFilesort())
+        .pipe(order([
+            'main.js',
+            '*'
+        ]))
+        .pipe(jshint())
+        .pipe(jshint.reporter());
+}
+
+function vendorStyles() {
+    return gulp.src(styleNpmFiles());
+}
+
+function vendorTestScripts() {
+    return gulp.src(mainNpmFiles()
+            .concat('!node_modules/**/index.js')
+            .concat('node_modules/angular/angular.js')
+            .concat('node_modules/bootstrap/**/bootstrap.js')
             .concat('node_modules/angular-mocks/angular-mocks.js')
         )
         .pipe(order([
@@ -239,25 +83,25 @@ function vendorJS() {
             'angular.js',
             'angular-ui-router.js',
             'angular-mocks.js',
+            'bootstrap.js',
             '*'
         ]));
 }
 
-function appJS() {
-    return gulp.src('app/scripts/**/*.js')
-        .pipe(angularFilesort())
-        .pipe(order([
-            'main.js',
-            '*'
-        ]));
+function appTests() {
+    return gulp.src(paths.appTests);
 }
 
-function testJS() {
-    return gulp.src('test/**/*.js');
+function appStyles() {
+    return gulp.src(paths.appStyles);
+}
+
+function appViews() {
+    return gulp.src(paths.appViews);
 }
 
 function karmaFiles() {
-    return inject(series(vendorJS(), appJS(), testJS()), {
+    return inject(series(vendorScripts(), vendorTestScripts(), appScripts(), appTests()), {
         starttag: 'files: [',
         endtag: '],',
         relative: true,
@@ -267,7 +111,164 @@ function karmaFiles() {
     });
 }
 
-gulp.task('pretest', function() {
+function buildVendorScripts() {
+    return vendorScripts()
+        .pipe($.if(minimal, babel({
+            presets: ['env', 'babili']
+        })))
+        .pipe($.if(minimal, concat('vendors.js')))
+        .pipe($.if(minimal, uglify()))
+        .pipe(gulp.dest(dest + '/js'));
+}
+
+function buildVendorStyles() {
+    return vendorStyles()
+        .pipe(sass().on('error', sass.logError))
+        .pipe($.if(minimal, cleanCSS()))
+        .pipe($.if(minimal, concat('vendor.css')))
+        .pipe(gulp.dest(dest + '/css'));
+}
+
+function buildScripts() {
+    return appScripts()
+        .pipe($.if(minimal, babel({
+            presets: ['env', 'babili']
+        })))
+        .pipe($.if(minimal, concat('app.js')))
+        .pipe($.if(minimal, uglify()))
+        .pipe(gulp.dest(dest + '/js'));
+}
+
+function buildTestScripts() {
+    return appTests()
+        .pipe(gulp.dest(dest + '/test'));
+}
+
+function buildVendorTestScripts() {
+    return vendorTestScripts()
+        .pipe(gulp.dest(dest + '/js'));
+}
+
+function buildStyles() {
+    return appStyles()
+        .pipe(sass().on('error', sass.logError))
+        .pipe($.if(minimal, cleanCSS()))
+        .pipe($.if(minimal, concat('app.css')))
+        .pipe(gulp.dest(dest + '/css'));
+}
+
+gulp.task('clean', () => {
+    return del(['.tmp', 'build', 'dist', 'coverage', 'reports', 'yarn*', '*.tgz', '*.zip', '.karma*'])
+});
+
+gulp.task('default', ['build'], () => {});
+
+gulp.task('serve', ['default'], () => {
+    browserSync.init({
+        notify: false,
+        port: 9000,
+        server: {
+            baseDir: dest
+        }
+    });
+
+    gulp.watch(paths.appScripts, ['scripts']);
+    gulp.watch(paths.appStyles, ['styles']);
+    gulp.watch(paths.appViews, ['html']);
+    gulp.watch(paths.appImages, ['images']);
+    gulp.watch(paths.appFonts, ['fonts']);
+    gulp.watch(paths.appIcon, ['icons']);
+});
+
+gulp.task('serve:dist', ['dist'], () => {
+    browserSync.init({
+        notify: false,
+        port: 9000,
+        server: {
+            baseDir: dest
+        }
+    });
+});
+
+gulp.task('serve:test', ['testHtml'], () => {
+    browserSync.init({
+        notify: false,
+        port: 9000,
+        ui: false,
+        server: {
+            baseDir: dest
+        }
+    });
+
+    gulp.watch(paths.appScripts, ['scripts']);
+    gulp.watch([paths.appTests, dest + '/*.html']).on('change', reload);
+});
+
+gulp.task('scripts', () => {
+    return buildScripts()
+        .pipe(reload({
+            stream: true
+        }));
+});
+
+gulp.task('styles', () => {
+    return buildStyles()
+        .pipe(reload({
+            stream: true
+        }));
+});
+
+gulp.task('fonts', () => {
+    return gulp.src(fontNpmFiles()
+            .concat(paths.appFonts)
+        )
+        .pipe(rename({
+            dirname: ''
+        }))
+        .pipe(gulp.dest(dest + '/fonts'))
+        .pipe(reload({
+            stream: true
+        }));
+});
+
+gulp.task('images', () => {
+    return gulp.src(paths.appImages)
+        .pipe($.cache($.imagemin()))
+        .pipe(gulp.dest(dest + '/images'))
+        .pipe(reload({
+            stream: true
+        }));
+});
+
+gulp.task('icon', () => {
+    return gulp.src(paths.appIcon)
+        .pipe(gulp.dest(dest))
+        .pipe(reload({
+            stream: true
+        }));
+});
+
+gulp.task('html', () => {
+
+    return gulp.src(paths.appViews)
+        .pipe(inject(series(buildVendorScripts(), buildScripts(), buildVendorStyles(), buildStyles()), {
+            ignorePath: dest,
+            addRootSlash: false
+        }))
+        .pipe(gulp.dest(dest));
+});
+
+gulp.task('testHtml', ['build'], () => {
+
+    return gulp.src(paths.testHtml)
+        .pipe(inject(series(buildVendorTestScripts(), buildScripts(), buildTestScripts()), {
+            ignorePath: dest,
+            addRootSlash: false
+        }))
+        .pipe(gulp.dest(dest));
+});
+
+gulp.task('pretest', ['clean'], function() {
 
     fs.writeFileSync('.karma.conf.js', fs.readFileSync('karma.conf.js'));
 
@@ -276,23 +277,14 @@ gulp.task('pretest', function() {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('karma', function() {
-
+gulp.task('test', ['pretest'], function() {
     return new karma({
         configFile: __dirname + '/.karma.conf.js',
         singleRun: true
     }).start();
 });
 
-gulp.task('test', function() {
-
-    return new Promise(resolve => {
-        runSequence(['pretest'], ['karma'], resolve);
-    });
-});
-
-
-gulp.task('ngbuild', () => {
+gulp.task('build', () => {
     return new Promise(resolve => {
         minimal = false;
         dest = 'build';
@@ -300,7 +292,7 @@ gulp.task('ngbuild', () => {
     });
 });
 
-gulp.task('ngdist', () => {
+gulp.task('dist', () => {
     return new Promise(resolve => {
         minimal = true;
         dest = 'dist';
@@ -308,63 +300,4 @@ gulp.task('ngdist', () => {
     });
 });
 
-gulp.task('compile', () => {
-
-    var vendor = gulp.src(mainNpmFiles()
-            .concat('!node_modules/**/index.js')
-            .concat('node_modules/angular/angular.js')
-            .concat('node_modules/bootstrap/**/bootstrap.js')
-        )
-        .pipe(order([
-            'jquery.js',
-            'angular.js',
-            'bootstrap.js',
-            '*'
-        ]))
-        .pipe($.if(minimal, babel({
-            presets: ['env', 'babili']
-        })))
-        .pipe($.if(minimal, concat('vendors.js')))
-        .pipe($.if(minimal, uglify()))
-        .pipe(gulp.dest(dest + '/js'));
-
-    var app = gulp.src('app/scripts/**/*.js')
-        .pipe(angularFilesort())
-        .pipe(order([
-            'main.js',
-            '*'
-        ]))
-        .pipe($.if(minimal, babel({
-            presets: ['env', 'babili']
-        })))
-        .pipe($.if(minimal, concat('app.js')))
-        .pipe($.if(minimal, uglify()))
-        .pipe(gulp.dest(dest + '/js'));
-
-    var cssVendor = gulp.src(styleNpmFiles())
-        .pipe(sass().on('error', sass.logError))
-        .pipe($.if(minimal, cleanCSS()))
-        .pipe($.if(minimal, concat('vendor.css')))
-        .pipe(gulp.dest(dest + '/css'));
-
-    var cssApp = gulp.src('app/styles/*.scss')
-        .pipe(sass().on('error', sass.logError))
-        .pipe($.if(minimal, cleanCSS()))
-        .pipe($.if(minimal, concat('app.css')))
-        .pipe(gulp.dest(dest + '/css'));
-
-    var fonst = gulp.src(fontNpmFiles()
-            .concat('app/fonts/*')
-        )
-        .pipe(rename({
-            dirname: ''
-        }))
-        .pipe(gulp.dest(dest + '/fonts'));
-
-    var html = gulp.src('app/**/*.html')
-        .pipe(inject(series(vendor, app, cssVendor, cssApp), {
-            ignorePath: dest,
-            addRootSlash: false
-        }))
-        .pipe(gulp.dest(dest));
-});
+gulp.task('compile', ['fonts', 'images', 'icon', 'html'], () => {});
