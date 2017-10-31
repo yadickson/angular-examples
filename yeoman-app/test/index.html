@@ -5,19 +5,20 @@
   <meta charset="utf-8">
   <title>Mocha Spec Runner</title>
 
-  <!-- inject:css -->
+  <!-- mocha:css -->
   <!-- endinject -->
 
 </head>
 
 <body>
-  <script src="js/mocha.js"></script>
+  <!-- mocha:js -->
+  <!-- endinject -->
+
   <div id="mocha"></div>
 
   <script>
     mocha.setup('bdd');
   </script>
-  <script src="js/chai.js"></script>
   <script>
     var assert = chai.assert;
     var expect = chai.expect;

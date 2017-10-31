@@ -71,6 +71,23 @@ function vendorStyles() {
     return gulp.src(styleNpmFiles());
 }
 
+function mochaTestScripts() {
+    return gulp.src([]
+            .concat('node_modules/mocha/mocha.js')
+            .concat('node_modules/chai/chai.js')
+        )
+        .pipe(order([
+            'mocha.js',
+            'chai.js'
+        ]));
+}
+
+function mochaTestStyles() {
+    return gulp.src([]
+        .concat('node_modules/mocha/mocha.css')
+    );
+}
+
 function vendorTestScripts() {
     return gulp.src(mainNpmFiles()
             .concat('!node_modules/**/index.js')
@@ -119,6 +136,16 @@ function buildVendorScripts() {
         .pipe($.if(minimal, concat('vendors.js')))
         .pipe($.if(minimal, uglify()))
         .pipe(gulp.dest(dest + '/js'));
+}
+
+function buildMochaTestScripts() {
+    return mochaTestScripts()
+        .pipe(gulp.dest(dest + '/js'));
+}
+
+function buildMochaTestStyle() {
+    return mochaTestStyles()
+        .pipe(gulp.dest(dest + '/css'));
 }
 
 function buildVendorStyles() {
@@ -261,6 +288,11 @@ gulp.task('html', () => {
 gulp.task('testHtml', ['build'], () => {
 
     return gulp.src(paths.testHtml)
+        .pipe(inject(series(buildMochaTestScripts(), buildMochaTestStyle()), {
+            starttag: '<!-- mocha:{{ext}} -->',
+            ignorePath: dest,
+            addRootSlash: false
+        }))
         .pipe(inject(series(buildVendorTestScripts(), buildScripts(), buildTestScripts()), {
             ignorePath: dest,
             addRootSlash: false
